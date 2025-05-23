@@ -1,0 +1,31 @@
+# File log
+*.log
+
+# File sementara
+*.tmp
+*.bak
+
+# File konfigurasi pribadi
+~/.ssh/
+~/.config/
+
+# File yang dihasilkan oleh sistem operasi
+~/.bash_history
+~/.viminfo
+~/.cache/
+
+# Folder yang berisi artefak build
+build/
+dist/
+bin/
+
+# Node Modules
+node_modules/
+
+# File yang berisi kunci atau token
+api_key.txt
+secret.env
+
+# Folder dan file yang terkait dengan IDE atau editor
+*.swp
+*.tmp
