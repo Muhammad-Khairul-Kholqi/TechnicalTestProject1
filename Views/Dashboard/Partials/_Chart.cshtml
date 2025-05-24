@@ -1,0 +1,63 @@
+<div class="mt-6 flex flex-col gap-5 lg:flex-row">
+  <div class="w-full lg:w-[60%] bg-white rounded-lg p-4 border border-gray-300">
+    <h2 class="text-lg font-semibold mb-2">Chart Product</h2>
+    <div style="height: 400px;">
+      <canvas id="productChart"></canvas>
+    </div>
+  </div>
+
+  <div class="w-full lg:w-[40%] bg-white rounded-lg p-4 border border-gray-300">
+    <h2 class="text-lg font-semibold mb-2">Chart Category</h2>
+    <div style="height: 400px;">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  const productChart = new Chart(document.getElementById('productChart'), {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Product',
+        data: [100, 120, 90, 150, 180, 160, 200],
+        borderColor: '#FE5F00',
+        backgroundColor: 'rgba(254, 95, 0, 0.1)',
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#FE5F00'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const categoryChart = new Chart(document.getElementById('categoryChart'), {
+    type: 'bar',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Category',
+        data: [80, 90, 100, 110, 120, 130, 150],
+        backgroundColor: '#FE5F00',
+        borderRadius: 6,
+        barThickness: 20
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>

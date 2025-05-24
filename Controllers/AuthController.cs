@@ -7,8 +7,7 @@ public class AuthController : Controller
         return View();
     }
 
-    // mengatur rote untuk halaman registrasi (jika tidak menggunakan ini maka pathnya menjadi huruf besar)
-    [Route("auth/registration")]
+    [Route("/registration")]
     [HttpGet]
     public IActionResult Registration()
     {
