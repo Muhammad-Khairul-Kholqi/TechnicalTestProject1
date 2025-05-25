@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public class ProductController : Controller
 {
-    [Route("/products")]
+    [Route("/product")]
     [HttpGet]
     public IActionResult IndexProduct()
     {
