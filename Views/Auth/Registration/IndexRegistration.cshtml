@@ -1,0 +1,25 @@
+@model technicalTestProject_1.Models.RegisterViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Create Your Account";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>@ViewData["Title"]</title>
+</head>
+<body class="min-h-screen bg-white flex">
+    @await Html.PartialAsync("Registration/_ContentLeft", Model)
+    @await Html.PartialAsync("Registration/_ContentRight")
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

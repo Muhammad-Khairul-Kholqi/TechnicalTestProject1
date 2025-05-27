@@ -1,53 +1,21 @@
+@model List<ProductViewModel>
 @{
     ViewData["Title"] = "Product";
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
 }
 
 <div class="bg-white p-5 rounded-lg">
     <h1 class="text-xl font-bold">Data Product</h1>
-    
-    @* Tabs *@
-    <div class="mt-6 mb-6 relative overflow-y-auto">
-        <div class="flex space-x-8 border-b border-gray-200 mb-2">
-            <div class="tab-item active cursor-pointer pb-3 relative">
-                <span class="text-[#FE5F00] font-medium w-full">All</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-[#FE5F00]"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Helalth</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Hobby</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Food</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Drink</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Fashio</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-            <div class="tab-item cursor-pointer pb-3 relative">
-                <span class="text-gray-500 font-medium w-full hover:text-[#FE5F00]">Electronic</span>
-                <div class="absolute bottom-[-2px] rounded-lg left-0 right-0 h-1 bg-transparent"></div>
-            </div>
-        </div>
-    </div>
 
     @* Search and Controls *@
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between my-6 gap-4">
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 flex-1">
             @* Search Input *@
             <div class="relative flex-1 lg:min-w-[300px]">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
                 </div>
-                <input type="text" 
+                <input type="text" id="searchInput"
                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" 
                        placeholder="Search product name">
             </div>
@@ -63,7 +31,8 @@
                 </button>
                 <div class="date-picker-dropdown absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden">
                     <div class="p-3">
-                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]">
+                        <input type="date" id="dateSearch" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]">
+                        <button type="button" id="clearDate" class="mt-2 text-sm text-gray-500 hover:text-gray-700">Clear Date</button>
                     </div>
                 </div>
             </div>
@@ -76,16 +45,16 @@
                 </button>
                 <div class="entries-dropdown absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden">
                     <div class="py-1">
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="5 Data Entries">5 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="10 Data Entries">10 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="20 Data Entries">20 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="50 Data Entries">50 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="5">5 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="10">10 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="20">20 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="50">50 Data Entries</a>
                     </div>
                 </div>
             </div>
 
             @* Add Product Button *@
-            <button type="button" class="w-full lg:w-[200px] inline-flex items-center justify-center px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FE5F00]">
+            <button type="button" class="add-product-btn w-full lg:w-[200px] inline-flex items-center justify-center px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FE5F00]">
                 <i data-lucide="plus" class="w-5 h-5 text-white mr-2"></i>
                 Add Product
             </button>
@@ -93,168 +62,613 @@
     </div>
 
     @* Table *@
-    <div class="relative overflow-x-auto sm:rounded-lg">
-        <table class="w-full text-sm text-left">
-            <thead class="text-md text-gray-700 uppercase border-b border-gray-200">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        <input type="checkbox">
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        IMAGE
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        PRODUCT NAME 
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        CATEGORY
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        MANUFACTURER NAME
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        DATE
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        ACTION
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    var products = new[] {
-                        new { Id = 1, Name = "Sandwich", Category = "Food", Manufacturer = "Muhammad Khairul Kholqi", Date = "12 December 2025" },
-                        new { Id = 2, Name = "Burger", Category = "Food", Manufacturer = "John Doe", Date = "13 December 2025" },
-                        new { Id = 3, Name = "Pizza", Category = "Food", Manufacturer = "Jane Smith", Date = "14 December 2025" },
-                        new { Id = 4, Name = "Coffee", Category = "Beverage", Manufacturer = "Coffee Corp", Date = "15 December 2025" },
-                        new { Id = 5, Name = "Juice", Category = "Beverage", Manufacturer = "Fresh Co", Date = "16 December 2025" }
-                    };
-                }
-                
-                @foreach (var product in products)
-                {
-                    <tr class="text-md hover:bg-gray-100">
-                        <td class="px-6 py-4">
-                            <input type="checkbox">
-                        </td>
-                        <td class="px-6 py-4">
-                            <img 
-                                src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTsmcBGBK53A9NHzfHIsBK0UX5TAhlceYXiPTEntCrtRrf3ZuR5" 
-                                alt="@product.Name"
-                                class="w-12 h-12 rounded-full object-cover"
-                            >
-                        </td>
-                        <td class="px-6 py-4">
-                            @product.Name
-                        </td>
-                        <td class="px-6 py-4">
-                            @product.Category
-                        </td>
-                        <td class="px-6 py-4">
-                            @product.Manufacturer
-                        </td>
-                        <td class="px-6 py-4">
-                            @product.Date
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-5">
-                                <a 
-                                    href="@Url.Action("Edit", "Product", new { id = product.Id })" 
-                                    class="text-green-500 hover:underline font-medium"
-                                >
-                                    Edit
-                                </a>
-                                <form action="@Url.Action("Delete", "Product", new { id = product.Id })" method="post" class="inline">
-                                    <button type="submit" class="text-red-500 hover:underline font-medium"> 
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+    <div id="tableContainer">
+        <div class="relative overflow-x-auto sm:rounded-lg">
+            <table class="w-full text-sm text-left">
+                <thead class="text-md text-gray-700 uppercase border-b border-gray-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">IMAGE</th>
+                        <th scope="col" class="px-6 py-3">PRODUCT NAME</th>
+                        <th scope="col" class="px-6 py-3">CATEGORY</th>
+                        <th scope="col" class="px-6 py-3">PRICE</th>
+                        <th scope="col" class="px-6 py-3">MANUFACTURER NAME</th>
+                        <th scope="col" class="px-6 py-3">DATE</th>
+                        <th scope="col" class="px-6 py-3">ACTION</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="productTableBody">
+                    @if (Model?.Any() == true)
+                    {
+                        @foreach (var product in Model)
+                        {
+                            <tr class="text-md hover:bg-gray-100" data-product-id="@product.Id">
+                                <td class="px-6 py-4">
+                                    <img src="@(string.IsNullOrEmpty(product.ProductImage) ? "/images/default-product.jpg" : product.ProductImage)" 
+                                        alt="@product.ProductName"
+                                        class="w-12 h-12 rounded-lg object-cover"
+                                        onerror="this.src='https://via.placeholder.com/48x48/F3F4F6/9CA3AF?text=No+Image'">
+                                </td>
+                                <td class="px-6 py-4">@product.ProductName</td>
+                                <td class="px-6 py-4">@product.CategoryName</td>
+                                <td class="px-6 py-4">@product.Price.ToString("C", new System.Globalization.CultureInfo("id-ID"))</td>
+                                <td class="px-6 py-4">@product.CreatorName</td>
+                                <td class="px-6 py-4">@product.CreatedAt.ToString("dd MMMM yyyy")</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-5">
+                                        <a href="#" 
+                                        class="edit-btn text-green-500 hover:underline font-medium"
+                                        data-id="@product.Id"
+                                        data-name="@product.ProductName"
+                                        data-category="@product.CategoryId"
+                                        data-price="@product.Price"
+                                        data-image="@product.ProductImage">
+                                            Edit
+                                        </a>
+                                        <button type="button" 
+                                                class="delete-btn text-red-500 hover:underline font-medium" 
+                                                data-id="@product.Id" 
+                                                data-name="@product.ProductName">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i data-lucide="package" class="w-12 h-12 text-gray-400 mb-2"></i>
+                                    <p class="text-lg font-medium">No products found</p>
+                                    <p class="text-sm">Try adjusting your search criteria or add a new product</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+@* Add Product Modal *@
+<div id="addModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Add Product</h3>
+            <button type="button" class="close-modal">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <form id="addProductForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Image<span class="text-red-500">*</span></label>
+                <div id="dropzone"
+                    class="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-md cursor-pointer text-gray-400 hover:border-[#FE5F00] transition-colors"
+                    onclick="document.getElementById('fileInput').click()"
+                    ondragover="handleDragOver(event)"
+                    ondragleave="handleDragLeave(event)"
+                    ondrop="handleDrop(event)">
+
+                    <i data-lucide="file-plus" class="h-10 w-10 mb-2 text-gray-400"></i>
+                    <p id="dropzoneText" class="text-sm text-center px-4">
+                        Drag and drop image here or <span class="text-[#FE5F00] font-medium">click to upload</span>
+                    </p>
+                    <input type="file" id="fileInput" name="ProductImageFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Product Name<span class="text-red-500">*</span></label>
+                <input type="text" name="ProductName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter product name" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Price<span class="text-red-500">*</span></label>
+                <input type="number" name="Price" step="0.01" min="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter product price" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Category<span class="text-red-500">*</span></label>
+                <select name="CategoryId" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" required>
+                    <option value="">Select Category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="flex-1 w-full px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none">
+                <span class="submit-text">Add Product</span>
+                <i data-lucide="loader-2" class="w-5 h-5 animate-spin hidden submit-loading"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+@* Edit Product Modal *@
+<div id="editModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Edit Product</h3>
+            <button type="button" class="close-modal text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <form id="editProductForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="editProductId" name="Id">
+            <input type="hidden" id="existingImagePath" name="ExistingImagePath">
+            
+            <div class="mb-6 relative group w-full">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Image</label>
+                <img id="previewImage" src="" alt="Preview" class="w-full h-36 object-cover rounded-md">
+                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    <label class="text-white px-4 py-2 bg-[#FE5F00] rounded cursor-pointer text-sm font-medium">
+                        Change Image
+                        <input type="file" name="ProductImageFile" accept="image/*" class="hidden" onchange="updateImage(event)">
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Product Name<span class="text-red-500">*</span></label>
+                <input type="text" id="editProductName" name="ProductName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter product name" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Price<span class="text-red-500">*</span></label>
+                <input type="number" id="editPrice" name="Price" step="0.01" min="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter product price" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Category<span class="text-red-500">*</span></label>
+                <select id="editProductCategory" name="CategoryId" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" required>
+                    <option value="">Select Category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="flex-1 w-full px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none">
+                <span class="submit-text">Save Changes</span>
+                <i data-lucide="loader-2" class="w-5 h-5 animate-spin hidden submit-loading"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+@* Delete Confirmation Modal *@
+<div id="deleteModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center w-14 h-14 bg-[#FFEDD5] rounded-full">
+                <i data-lucide="trash-2" class="w-8 h-8 text-[#FE5F00]"></i>
+            </div>
+        </div>
+
+        <h1 class="text-center text-xl font-semibold mt-6">Delete Product</h1>
+        <p class="text-center text-md font-light text-gray-600 mt-2">Are you sure want to delete this product?</p>
+        <p class="text-center text-md font-light text-gray-600">This action cannot be undone</p>
+
+        <div class="flex gap-3 mt-6">
+            <button type="button" id="confirmDelete" class="flex-1 px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#FE5F00]/90 focus:outline-none">
+                <span class="delete-text">Delete</span>
+                <i data-lucide="loader-2" class="w-5 h-5 animate-spin hidden delete-loading"></i>
+            </button>
+            <button type="button" class="close-modal flex-1 px-4 py-2 border border-[#FE5F00] text-[#FE5F00] rounded-md hover:bg-[#FE5F00]/10 focus:outline-none">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Tab functionality
-        const tabItems = document.querySelectorAll('.tab-item');
-        tabItems.forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                tabItems.forEach(t => {
-                    t.classList.remove('active');
-                    const span = t.querySelector('span');
-                    const line = t.querySelector('div');
-                    span.classList.remove('text-[#FE5F00]');
-                    span.classList.add('text-gray-500');
-                    line.classList.remove('bg-[#FE5F00]');
-                    line.classList.add('bg-transparent');
-                });
-                
-                // Add active class to clicked tab
-                this.classList.add('active');
-                const span = this.querySelector('span');
-                const line = this.querySelector('div');
-                span.classList.add('text-[#FE5F00]');
-                span.classList.remove('text-gray-500');
-                line.classList.add('bg-[#FE5F00]');
-                line.classList.remove('bg-transparent');
-            });
-        });
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-        // Date picker dropdown
-        const datePickerBtn = document.querySelector('.date-picker-btn');
-        const datePickerDropdown = document.querySelector('.date-picker-dropdown');
-        const dateInput = datePickerDropdown.querySelector('input[type="date"]');
-        const dateText = document.querySelector('.date-text');
+    // Variables
+    let currentProductId = null;
+    let searchTimeout = null;
 
-        datePickerBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            datePickerDropdown.classList.toggle('hidden');
-            // Close entries dropdown if open
-            document.querySelector('.entries-dropdown').classList.add('hidden');
-        });
+    // Modal elements
+    const addModal = document.getElementById('addModal');
+    const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
 
-        dateInput.addEventListener('change', function() {
-            if (this.value) {
-                const date = new Date(this.value);
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                dateText.textContent = date.toLocaleDateString('en-US', options);
-            } else {
-                dateText.textContent = 'Pick Date';
-            }
-            datePickerDropdown.classList.add('hidden');
-        });
+    // Form elements
+    const addForm = document.getElementById('addProductForm');
+    const editForm = document.getElementById('editProductForm');
 
-        // Entries dropdown
-        const entriesBtn = document.querySelector('.entries-btn');
-        const entriesDropdown = document.querySelector('.entries-dropdown');
-        const entriesText = document.querySelector('.entries-text');
-        const entriesOptions = document.querySelectorAll('.entries-option');
+    // Button elements
+    const addProductBtn = document.querySelector('.add-product-btn');
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
 
-        entriesBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            entriesDropdown.classList.toggle('hidden');
-            // Close date picker dropdown if open
-            datePickerDropdown.classList.add('hidden');
-        });
+    // Search elements
+    const searchInput = document.getElementById('searchInput');
+    const dateSearch = document.getElementById('dateSearch');
+    const clearDateBtn = document.getElementById('clearDate');
 
-        entriesOptions.forEach(option => {
-            option.addEventListener('click', function(e) {
-                e.preventDefault();
-                entriesText.textContent = this.getAttribute('data-value');
-                entriesDropdown.classList.add('hidden');
-            });
-        });
+    // Dropdown elements
+    const datePickerBtn = document.querySelector('.date-picker-btn');
+    const datePickerDropdown = document.querySelector('.date-picker-dropdown');
+    const entriesBtn = document.querySelector('.entries-btn');
+    const entriesDropdown = document.querySelector('.entries-dropdown');
+    const entriesOptions = document.querySelectorAll('.entries-option');
 
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function() {
-            datePickerDropdown.classList.add('hidden');
+    // Event Listeners
+    addProductBtn.addEventListener('click', () => showModal(addModal));
+    
+    // Search functionality
+    searchInput.addEventListener('input', handleSearch);
+    dateSearch.addEventListener('change', handleSearch);
+    clearDateBtn.addEventListener('click', clearDateFilter);
+
+    // Dropdown functionality
+    datePickerBtn.addEventListener('click', (e) => toggleDropdown(e, datePickerDropdown, entriesDropdown));
+    entriesBtn.addEventListener('click', (e) => toggleDropdown(e, entriesDropdown, datePickerDropdown));
+
+    entriesOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.preventDefault();
+            const value = option.getAttribute('data-value');
+            document.querySelector('.entries-text').textContent = value + ' Data Entries';
             entriesDropdown.classList.add('hidden');
         });
     });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', () => {
+        datePickerDropdown.classList.add('hidden');
+        entriesDropdown.classList.add('hidden');
+    });
+
+    // Modal close functionality
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', closeAllModals);
+    });
+
+    // Close modal when clicking outside
+    [addModal, editModal, deleteModal].forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeAllModals();
+        });
+    });
+
+    // Form submissions
+    addForm.addEventListener('submit', handleAddProduct);
+    editForm.addEventListener('submit', handleEditProduct);
+    confirmDeleteBtn.addEventListener('click', handleDeleteProduct);
+
+    // Initialize dynamic event listeners
+    initializeDynamicEvents();
+
+    // Functions
+    function showModal(modal) {
+        modal.classList.remove('hidden');
+        // Reinitialize icons for the modal
+        setTimeout(() => lucide.createIcons(), 100);
+    }
+
+    function closeAllModals() {
+        addModal.classList.add('hidden');
+        editModal.classList.add('hidden');
+        deleteModal.classList.add('hidden');
+        resetForms();
+    }
+
+    function resetForms() {
+        addForm.reset();
+        editForm.reset();
+        document.getElementById('dropzoneText').textContent = 'Drag and drop image here or click to upload';
+        currentProductId = null;
+    }
+
+    function toggleDropdown(e, targetDropdown, otherDropdown) {
+        e.stopPropagation();
+        targetDropdown.classList.toggle('hidden');
+        otherDropdown.classList.add('hidden');
+    }
+
+    function handleSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const searchTerm = searchInput.value.trim();
+            const searchDate = dateSearch.value;
+            
+            showLoading(true);
+            
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('searchTerm', searchTerm);
+            if (searchDate) params.append('searchDate', searchDate);
+
+            fetch(`/product/search?${params.toString()}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('tableContainer').innerHTML = html;
+                    initializeDynamicEvents();
+                    lucide.createIcons();
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    showNotification('Error searching products', 'error');
+                })
+                .finally(() => {
+                    showLoading(false);
+                });
+        }, 500);
+    }
+
+    function clearDateFilter() {
+        dateSearch.value = '';
+        document.querySelector('.date-text').textContent = 'Pick Date';
+        datePickerDropdown.classList.add('hidden');
+        handleSearch();
+    }
+
+    function initializeDynamicEvents() {
+        // Edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = btn.getAttribute('data-id');
+                loadProductForEdit(id);
+            });
+        });
+
+        // Delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentProductId = btn.getAttribute('data-id');
+                const productName = btn.getAttribute('data-name');
+                showModal(deleteModal);
+            });
+        });
+    }
+
+    async function loadProductForEdit(id) {
+        try {
+            const response = await fetch(`/product/details/${id}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                const product = result.data;
+                
+                document.getElementById('editProductId').value = product.id;
+                document.getElementById('editProductName').value = product.productName;
+                document.getElementById('editPrice').value = product.price;
+                document.getElementById('editProductCategory').value = product.categoryId;
+                document.getElementById('existingImagePath').value = product.productImage;
+                
+                const previewImage = document.getElementById('previewImage');
+                previewImage.src = product.productImage || '/images/default-product.jpg';
+                
+                showModal(editModal);
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error loading product:', error);
+            showNotification('Error loading product details', 'error');
+        }
+    }
+
+    async function handleAddProduct(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(addForm);
+        const submitBtn = addForm.querySelector('button[type="submit"]');
+        
+        setButtonLoading(submitBtn, true);
+        
+        try {
+            const response = await fetch('/product/create', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                closeAllModals();
+                refreshProductList();
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error creating product:', error);
+            showNotification('Error creating product', 'error');
+        } finally {
+            setButtonLoading(submitBtn, false);
+        }
+    }
+
+    async function handleEditProduct(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(editForm);
+        const productId = document.getElementById('editProductId').value;
+        const submitBtn = editForm.querySelector('button[type="submit"]');
+        
+        setButtonLoading(submitBtn, true);
+        
+        try {
+            const response = await fetch(`/product/update/${productId}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                closeAllModals();
+                refreshProductList();
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error updating product:', error);
+            showNotification('Error updating product', 'error');
+        } finally {
+            setButtonLoading(submitBtn, false);
+        }
+    }
+
+    async function handleDeleteProduct() {
+        if (!currentProductId) return;
+        
+        const deleteBtn = confirmDeleteBtn;
+        setButtonLoading(deleteBtn, true, 'delete');
+        
+        try {
+            const formData = new FormData();
+            formData.append('__RequestVerificationToken', 
+                document.querySelector('input[name="__RequestVerificationToken"]').value);
+            
+            const response = await fetch(`/product/delete/${currentProductId}`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification(result.message, 'success');
+                closeAllModals();
+                refreshProductList();
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            showNotification('Error deleting product', 'error');
+        } finally {
+            setButtonLoading(deleteBtn, false, 'delete');
+        }
+    }
+
+    function setButtonLoading(button, isLoading, type = 'submit') {
+        const textElement = button.querySelector(`.${type}-text`);
+        const loadingElement = button.querySelector(`.${type}-loading`);
+        
+        if (isLoading) {
+            textElement.classList.add('hidden');
+            loadingElement.classList.remove('hidden');
+            button.disabled = true;
+        } else {
+            textElement.classList.remove('hidden');
+            loadingElement.classList.add('hidden');
+            button.disabled = false;
+        }
+    }
+
+    function showLoading(show) {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (show) {
+            loadingIndicator.classList.remove('hidden');
+        } else {
+            loadingIndicator.classList.add('hidden');
+        }
+    }
+
+    function refreshProductList() {
+        searchInput.value = '';
+        dateSearch.value = '';
+        document.querySelector('.date-text').textContent = 'Pick Date';
+        handleSearch();
+    }
+
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-[60] p-4 rounded-md shadow-lg transform transition-all duration-300 translate-x-full`;
+        
+        const bgColor = type === 'success' ? 'bg-green-500' : 
+                       type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+        
+        notification.classList.add(bgColor);
+        notification.innerHTML = `
+            <div class="flex items-center text-white">
+                <span class="mr-2">${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-2">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+        lucide.createIcons();
+
+        // Show notification
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 5000);
+    }
+});
+
+// File handling functions
+function handleDragOver(event) {
+    event.preventDefault();
+    document.getElementById('dropzone').classList.add('border-[#FE5F00]');
+}
+
+function handleDragLeave(event) {
+    event.preventDefault();
+    document.getElementById('dropzone').classList.remove('border-[#FE5F00]');
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('fileInput');
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect({ target: { files } });
+    }
+    document.getElementById('dropzone').classList.remove('border-[#FE5F00]');
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const dropText = document.getElementById('dropzoneText');
+    if (file) {
+        dropText.textContent = file.name;
+    } else {
+        dropText.textContent = "Drag and drop image here or click to upload";
+    }
+}
+
+function updateImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImage').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
 </script>

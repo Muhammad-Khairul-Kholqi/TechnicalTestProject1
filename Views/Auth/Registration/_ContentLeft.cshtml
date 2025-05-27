@@ -1,0 +1,311 @@
+@model technicalTestProject_1.Models.RegisterViewModel
+
+<div class="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-white">
+    <div class="w-full max-w-md">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Join Us Today!</h1>
+            <p class="text-gray-500">Create your account to start managing products</p>
+        </div>
+        
+        <!-- Success/Error Messages -->
+        <div id="messageContainer" class="hidden mb-4">
+            <div id="successMessage" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"></div>
+            <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"></div>
+        </div>
+        
+        <form id="registrationForm" method="post" action="/registration" class="space-y-6">
+            @Html.AntiForgeryToken()
+            
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-500">
+                    Email Address <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </span>
+                    @Html.TextBoxFor(m => m.Email, new { 
+                        @class = "w-full pl-12 pr-4 py-2 border-2 border-gray-200 rounded-md focus:border-gray-300 focus:outline-none transition-colors duration-200",
+                        placeholder = "Enter your email",
+                        required = "required"
+                    })
+                </div>
+                <span class="text-red-500 text-sm" id="emailError"></span>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-500">
+                    Password <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i data-lucide="lock-keyhole" class="w-5 h-5"></i>
+                    </span>
+                    @Html.PasswordFor(m => m.Password, new { 
+                        @class = "w-full pl-12 pr-12 py-2 border-2 border-gray-200 rounded-md focus:border-gray-300 focus:outline-none transition-colors duration-200",
+                        placeholder = "Create your password",
+                        id = "passwordInput",
+                        required = "required"
+                    })
+                    <span id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <span class="text-red-500 text-sm" id="passwordError"></span>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-500">
+                    Confirm Password <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i data-lucide="lock-keyhole" class="w-5 h-5"></i>
+                    </span>
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { 
+                        @class = "w-full pl-12 pr-12 py-2 border-2 border-gray-200 rounded-md focus:border-gray-300 focus:outline-none transition-colors duration-200",
+                        placeholder = "Confirm your password",
+                        id = "confirmPasswordInput",
+                        required = "required"
+                    })
+                    <span id="toggleConfirmPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <span class="text-red-500 text-sm" id="confirmPasswordError"></span>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-[#FE5F00] text-white font-semibold py-2 px-6 rounded-md hover:bg-orange-700 transition-all duration-300 disabled:opacity-50">
+                <span id="submitText">Create Account</span>
+                <span id="submitLoader" class="hidden">Creating Account...</span>
+            </button>
+
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-4 bg-white text-gray-500">or continue with</span>
+                </div>
+            </div>
+
+            <div id="g_id_onload"
+                 data-client_id="@ViewData["GoogleClientId"]"
+                 data-context="signup"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleSignup"
+                 data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signup_with"
+                 data-size="large"
+                 data-logo_alignment="center"
+                 data-width="100%">
+            </div>
+
+            <div class="text-start mt-6">
+                <p class="text-gray-600">
+                    Already have an account? 
+                    <a href="/" class="text-[#FE5F00] hover:text-orange-700 font-semibold transition-colors">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client?hl=en" async defer></script>
+<script>
+    function showMessage(message, type) {
+        const messageContainer = document.getElementById('messageContainer');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        messageContainer.classList.remove('hidden');
+        
+        if (type === 'success') {
+            successMessage.textContent = message;
+            successMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+        } else {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            successMessage.classList.add('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    });
+
+    async function handleGoogleSignup(response) {
+        try {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            
+            const googleUser = {
+                email: payload.email,
+                name: payload.name,
+                picture: payload.picture
+            };
+
+            const result = await fetch('/Auth/GoogleRegister', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(googleUser)
+            });
+
+            const data = await result.json();
+            
+            if (data.success) {
+                showMessage(data.message, 'success'); 
+                setTimeout(() => {
+                    window.location.href = '/'; 
+                }, 2000);
+            } else {
+                showMessage(data.message || 'Google registration failed.', 'error');
+            }
+        } catch (error) {
+            console.error('Google signup error:', error);
+            showMessage('Google registration failed. Please try again.', 'error');
+        }
+    }
+</script>
+<script>
+    lucide.createIcons();
+    document.addEventListener('DOMContentLoaded', function() {
+         function initTogglePassword(inputId, toggleId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleBtn = document.getElementById(toggleId);
+
+            if (passwordInput && toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const isPassword = passwordInput.type === 'password';
+                    passwordInput.type = isPassword ? 'text' : 'password';
+
+                    // Update icon menggunakan Lucide
+                    const icon = isPassword ? 'eye-off' : 'eye';
+                    this.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
+
+                    // Refresh Lucide icons
+                    lucide.createIcons();
+                });
+            }
+        }
+
+        initTogglePassword('passwordInput', 'togglePassword');
+        initTogglePassword('confirmPasswordInput', 'toggleConfirmPassword');
+
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitLoader = document.getElementById('submitLoader');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            clearErrors();
+            
+            submitBtn.disabled = true;
+            submitText.classList.add('hidden');
+            submitLoader.classList.remove('hidden');
+            
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('/registration', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Registration successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    if (result.errors) {
+                        result.errors.forEach(error => {
+                            showMessage(error, 'error');
+                        });
+                    } else {
+                        showMessage('Registration failed. Please try again.', 'error');
+                    }
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitText.classList.remove('hidden');
+                submitLoader.classList.add('hidden');
+            }
+        });
+
+        function clearErrors() {
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('confirmPasswordError').textContent = '';
+            document.getElementById('messageContainer').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            messageContainer.classList.remove('hidden');
+            
+            if (type === 'success') {
+                successMessage.textContent = message;
+                successMessage.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+            } else {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+                successMessage.classList.add('hidden');
+            }
+        }
+    });
+
+    async function handleGoogleSignup(response) {
+        try {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            
+            const googleUser = {
+                email: payload.email,
+                name: payload.name,
+                picture: payload.picture
+            };
+
+            const result = await fetch('/Auth/GoogleRegister', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(googleUser)
+            });
+
+            const data = await result.json();
+            
+            if (data.success) {
+                showMessage('Registration successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/'; 
+                }, 2000);
+            } else {
+                showMessage(data.message || 'Google registration failed.', 'error');
+            }
+        } catch (error) {
+            console.error('Google signup error:', error);
+            showMessage('Google registration failed. Please try again.', 'error');
+        }
+    }
+</script>

@@ -25,6 +25,8 @@ node_modules/
 # File yang berisi kunci atau token
 api_key.txt
 secret.env
+.env
+appsettings.json
 
 # Folder dan file yang terkait dengan IDE atau editor
 *.swp

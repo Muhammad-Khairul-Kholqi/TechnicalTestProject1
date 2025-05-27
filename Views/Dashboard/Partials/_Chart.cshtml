@@ -24,7 +24,7 @@
       labels: days,
       datasets: [{
         label: 'Product',
-        data: [100, 120, 90, 150, 180, 160, 200],
+        data: @Html.Raw(ViewBag.ProductChartData),
         borderColor: '#FE5F00',
         backgroundColor: 'rgba(254, 95, 0, 0.1)',
         tension: 0.4,
@@ -44,7 +44,7 @@
       labels: days,
       datasets: [{
         label: 'Category',
-        data: [80, 90, 100, 110, 120, 130, 150],
+        data: @Html.Raw(ViewBag.CategoryChartData),
         backgroundColor: '#FE5F00',
         borderRadius: 6,
         barThickness: 20

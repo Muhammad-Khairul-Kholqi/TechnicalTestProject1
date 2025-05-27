@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Category";
+    var categories = ViewBag.Categories as List<technicalTestProject_1.Models.CategoryViewModel> ?? new List<technicalTestProject_1.Models.CategoryViewModel>();
 }
 
 <div class="bg-white p-5 rounded-lg">
@@ -14,6 +15,7 @@
                     <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
                 </div>
                 <input type="text" 
+                       id="searchInput"
                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" 
                        placeholder="Search category name">
             </div>
@@ -29,7 +31,7 @@
                 </button>
                 <div class="date-picker-dropdown absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden">
                     <div class="p-3">
-                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]">
+                        <input type="date" id="dateFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]">
                     </div>
                 </div>
             </div>
@@ -42,19 +44,29 @@
                 </button>
                 <div class="entries-dropdown absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10 hidden">
                     <div class="py-1">
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="5 Data Entries">5 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="10 Data Entries">10 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="20 Data Entries">20 Data Entries</a>
-                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="50 Data Entries">50 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="5">5 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="10">10 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="20">20 Data Entries</a>
+                        <a href="#" class="entries-option block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-value="50">50 Data Entries</a>
                     </div>
                 </div>
             </div>
 
             @* Add Category Button *@
-            <button type="button" class="w-full lg:w-[200px] inline-flex items-center justify-center px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FE5F00]">
+            <button type="button" class="add-category-btn w-full lg:w-[200px] inline-flex items-center justify-center px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FE5F00]">
                 <i data-lucide="plus" class="w-5 h-5 text-white mr-2"></i>
                 Add Category
             </button>
+        </div>
+    </div>
+
+    @* Alert Messages *@
+    <div id="alertMessage" class="hidden mb-4">
+        <div class="alert-success hidden px-4 py-3 rounded-md bg-green-50 border border-green-200 text-green-700">
+            <span class="alert-text"></span>
+        </div>
+        <div class="alert-error hidden px-4 py-3 rounded-md bg-red-50 border border-red-200 text-red-700">
+            <span class="alert-text"></span>
         </div>
     </div>
 
@@ -63,9 +75,6 @@
         <table class="w-full text-sm text-left">
             <thead class="text-md text-gray-700 uppercase border-b border-gray-200">
                 <tr>
-                    <th scope="col" class="px-6 py-3">
-                        <input type="checkbox">
-                    </th>
                     <th scope="col" class="px-6 py-3">
                         CATEGORY NAME 
                     </th>
@@ -80,45 +89,47 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                @{
-                    var categorys = new[] {
-                        new { Id = 1, CategoryName = "Food", Creator = "Muhammad Khairul Kholqi", Date = "12 December 2025" },
-                        new { Id = 2, CategoryName = "Food", Creator = "John Doe", Date = "13 December 2025" },
-                        new { Id = 3, CategoryName = "Food", Creator = "Jane Smith", Date = "14 December 2025" },
-                        new { Id = 4, CategoryName = "Beverage", Creator = "Fresh Co", Date = "15 December 2025" },
-                        new { Id = 5, CategoryName = "Beverage", Creator = "Coffee Corp", Date = "16 December 2025" }
-                    };
-                }
-                
-                @foreach (var category in categorys)
+            <tbody id="categoryTableBody">
+                @if (categories.Any())
                 {
-                    <tr class="text-md hover:bg-gray-100">
-                        <td class="px-6 py-4">
-                            <input type="checkbox">
-                        </td>
-                        <td class="px-6 py-4">
-                            @category.CategoryName
-                        </td>
-                        <td class="px-6 py-4">
-                            @category.Creator
-                        </td>
-                        <td class="px-6 py-4">
-                            @category.Date
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-5">
-                                <a 
-                                    href="@Url.Action("Edit", "Category", new { id = category.Id })" 
-                                    class="text-green-500 hover:underline font-medium"
-                                >
-                                    Edit
-                                </a>
-                                <form action="@Url.Action("Delete", "Category", new { id = category.Id })" method="post" class="inline">
-                                    <button type="submit" class="text-red-500 hover:underline font-medium"> 
+                    @foreach (var category in categories)
+                    {
+                        <tr class="text-md hover:bg-gray-100" data-category-id="@category.Id">
+                            <td class="px-6 py-4 category-name">
+                                @category.CategoryName
+                            </td>
+                            <td class="px-6 py-4">
+                                @category.CreatorName
+                            </td>
+                            <td class="px-6 py-4">
+                                @category.CreatedAt
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-5">
+                                    <a 
+                                        href="#" 
+                                        class="edit-btn text-green-500 hover:underline font-medium"
+                                        data-id="@category.Id"
+                                        data-name="@category.CategoryName"
+                                    >
+                                        Edit
+                                    </a>
+                                    <button type="button" class="delete-btn text-red-500 hover:underline font-medium" data-id="@category.Id" data-name="@category.CategoryName">
                                         Delete
                                     </button>
-                                </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center">
+                                <i data-lucide="inbox" class="w-16 h-16 text-gray-300 mb-4"></i>
+                                <p class="text-lg font-medium">No categories found</p>
+                                <p class="text-sm">Create your first category to get started</p>
                             </div>
                         </td>
                     </tr>
@@ -128,44 +139,263 @@
     </div>
 </div>
 
+@* Add Category Modal *@
+<div id="addModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Add Category</h3>
+            <button type="button" class="close-modal">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <form id="addCategoryForm">
+            @Html.AntiForgeryToken()
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Category Name<span class="text-red-500">*</span></label>
+                <input type="text" id="addCategoryName" name="CategoryName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter category name" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="addCategoryNameError"></div>
+            </div>
+            <button type="submit" class="flex-1 w-full px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none">
+                <span class="btn-text">Add Category</span>
+                <div class="hidden flex items-center justify-center loading-spinner">
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i>
+                    <span>Adding...</span>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+
+@* Edit Category Modal *@
+<div id="editModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Edit Category</h3>
+            <button type="button" class="close-modal">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <form id="editCategoryForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="editCategoryId" name="Id">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-2">Category Name<span class="text-red-500">*</span></label>
+                <input type="text" id="editCategoryName" name="CategoryName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FE5F00] focus:border-[#FE5F00]" placeholder="Enter category name" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="editCategoryNameError"></div>
+            </div>
+            <button type="submit" class="flex-1 w-full px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#E54900] focus:outline-none">
+                <span class="btn-text">Save Changes</span>
+                <div class="hidden flex items-center justify-center loading-spinner">
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i>
+                    Saving...
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+
+@* Delete Confirmation Modal *@
+<div id="deleteModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center w-14 h-14 bg-[#FFEDD5] rounded-full">
+                <i data-lucide="trash-2" class="w-8 h-8 text-[#FE5F00]"></i>
+            </div>
+        </div>
+
+        <h1 class="text-center text-xl font-semibold mt-6">Delete Category</h1>
+
+        <p class="text-center text-md font-light text-gray-600 mt-2">Are you sure want to delete this category?</p>
+
+        <p class="text-center text-md font-light text-gray-600">This action cannot be undone</p>
+
+        <div class="flex gap-3 mt-6">
+            <button type="button" id="confirmDelete" class="flex-1 px-4 py-2 bg-[#FE5F00] text-white rounded-md hover:bg-[#FE5F00]/90 focus:outline-none">
+                <span class="btn-text">Delete</span>
+                <div class="hidden flex items-center justify-center loading-spinner">
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i>
+                    Deleting...
+                </div>
+            </button>
+
+            <button type="button" class="close-modal flex-1 px-4 py-2 border border-[#FE5F00] text-[#FE5F00] rounded-md hover:bg-[#FE5F00]/10 focus:outline-none">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Tab functionality
-        const tabItems = document.querySelectorAll('.tab-item');
-        tabItems.forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                tabItems.forEach(t => {
-                    t.classList.remove('active');
-                    const span = t.querySelector('span');
-                    const line = t.querySelector('div');
-                    span.classList.remove('text-[#FE5F00]');
-                    span.classList.add('text-gray-500');
-                    line.classList.remove('bg-[#FE5F00]');
-                    line.classList.add('bg-transparent');
+        let currentPageSize = 5;
+        let currentSearchTerm = '';
+        let currentDate = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let categoryToDelete = null;
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertMessage');
+            const successAlert = alertContainer.querySelector('.alert-success');
+            const errorAlert = alertContainer.querySelector('.alert-error');
+            
+            successAlert.classList.add('hidden');
+            errorAlert.classList.add('hidden');
+            
+            if (type === 'success') {
+                successAlert.querySelector('.alert-text').textContent = message;
+                successAlert.classList.remove('hidden');
+            } else {
+                errorAlert.querySelector('.alert-text').textContent = message;
+                errorAlert.classList.remove('hidden');
+            }
+            
+            alertContainer.classList.remove('hidden');
+            
+            setTimeout(() => {
+                alertContainer.classList.add('hidden');
+            }, 5000);
+        }
+
+        function hideAlert() {
+            document.getElementById('alertMessage').classList.add('hidden');
+        }
+
+        function setButtonLoading(button, loading) {
+            const btnText = button.querySelector('.btn-text');
+            const loadingSpinner = button.querySelector('.loading-spinner');
+            
+            if (loading) {
+                btnText.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+                button.disabled = true;
+            } else {
+                btnText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                button.disabled = false;
+            }
+        }
+
+        function performSearch(page = 1) {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            currentSearchTerm = searchTerm;
+            currentDate = dateFilter || null;
+            currentPage = page;
+
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('searchTerm', searchTerm);
+            if (dateFilter) params.append('date', dateFilter);
+            params.append('pageSize', currentPageSize);
+            params.append('page', currentPage);
+
+            fetch(`/category/search?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateTable(data.categories);
+                    } else {
+                        showAlert(data.message || 'Error searching categories', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    showAlert('An error occurred while searching', 'error');
                 });
+        }
+
+        function updateTable(categories) {
+            const tbody = document.getElementById('categoryTableBody');
+            
+            if (categories.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center">
+                                <i data-lucide="inbox" class="w-16 h-16 text-gray-300 mb-4"></i>
+                                <p class="text-lg font-medium">No categories found</p>
+                                <p class="text-sm">Try adjusting your search criteria</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = categories.map(category => `
+                    <tr class="text-md hover:bg-gray-100" data-category-id="${category.id}">
+                        <td class="px-6 py-4 category-name">
+                            ${category.categoryName}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${category.creatorName}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${category.createdAt}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-5">
+                                <a href="#" class="edit-btn text-green-500 hover:underline font-medium"
+                                data-id="${category.id}" data-name="${category.categoryName}">
+                                    Edit
+                                </a>
+                                <button type="button" class="delete-btn text-red-500 hover:underline font-medium" 
+                                        data-id="${category.id}" data-name="${category.categoryName}">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
                 
-                // Add active class to clicked tab
-                this.classList.add('active');
-                const span = this.querySelector('span');
-                const line = this.querySelector('div');
-                span.classList.add('text-[#FE5F00]');
-                span.classList.remove('text-gray-500');
-                line.classList.add('bg-[#FE5F00]');
-                line.classList.remove('bg-transparent');
+                attachTableEventListeners();
+            }
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        function attachTableEventListeners() {
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    
+                    document.getElementById('editCategoryId').value = id;
+                    document.getElementById('editCategoryName').value = name;
+                    
+                    document.getElementById('editModal').classList.remove('hidden');
+                });
             });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    categoryToDelete = id;
+                    document.getElementById('deleteModal').classList.remove('hidden');
+                });
+            });
+        }
+
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 500);
         });
 
-        // Date picker dropdown
         const datePickerBtn = document.querySelector('.date-picker-btn');
         const datePickerDropdown = document.querySelector('.date-picker-dropdown');
-        const dateInput = datePickerDropdown.querySelector('input[type="date"]');
+        const dateInput = document.getElementById('dateFilter');
         const dateText = document.querySelector('.date-text');
 
         datePickerBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             datePickerDropdown.classList.toggle('hidden');
-            // Close entries dropdown if open
             document.querySelector('.entries-dropdown').classList.add('hidden');
         });
 
@@ -178,9 +408,9 @@
                 dateText.textContent = 'Pick Date';
             }
             datePickerDropdown.classList.add('hidden');
+            performSearch();
         });
 
-        // Entries dropdown
         const entriesBtn = document.querySelector('.entries-btn');
         const entriesDropdown = document.querySelector('.entries-dropdown');
         const entriesText = document.querySelector('.entries-text');
@@ -189,22 +419,186 @@
         entriesBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             entriesDropdown.classList.toggle('hidden');
-            // Close date picker dropdown if open
             datePickerDropdown.classList.add('hidden');
         });
 
         entriesOptions.forEach(option => {
             option.addEventListener('click', function(e) {
                 e.preventDefault();
-                entriesText.textContent = this.getAttribute('data-value');
+                const value = parseInt(this.getAttribute('data-value'));
+                currentPageSize = value;
+                entriesText.textContent = `${value} Data Entries`;
                 entriesDropdown.classList.add('hidden');
+                performSearch();
             });
         });
 
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function() {
-            datePickerDropdown.classList.add('hidden');
-            entriesDropdown.classList.add('hidden');
+        attachTableEventListeners();
+
+
+        const addModal = document.getElementById('addModal');
+        const editModal = document.getElementById('editModal');
+        const deleteModal = document.getElementById('deleteModal');
+        
+        document.querySelector('.add-category-btn').addEventListener('click', function() {
+            hideAlert();
+            document.getElementById('addCategoryForm').reset();
+            document.getElementById('addCategoryNameError').classList.add('hidden');
+            addModal.classList.remove('hidden');
+        });
+
+        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const categoryName = formData.get('CategoryName').trim();
+            
+            if (!categoryName) {
+                document.getElementById('addCategoryNameError').textContent = 'Category name is required';
+                document.getElementById('addCategoryNameError').classList.remove('hidden');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            setButtonLoading(submitBtn, true);
+            
+            const data = { CategoryName: categoryName };
+            
+            fetch('/category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                setButtonLoading(submitBtn, false);
+                
+                if (data.success) {
+                    addModal.classList.add('hidden');
+                    showAlert(data.message);
+                    performSearch();
+                } else {
+                    if (data.errors) {
+                        document.getElementById('addCategoryNameError').textContent = data.errors[0];
+                        document.getElementById('addCategoryNameError').classList.remove('hidden');
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                }
+            })
+            .catch(error => {
+                setButtonLoading(submitBtn, false);
+                console.error('Error:', error);
+                showAlert('An error occurred while adding the category', 'error');
+            });
+        });
+
+        document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const categoryId = parseInt(formData.get('Id'));
+            const categoryName = formData.get('CategoryName').trim();
+            
+            if (!categoryName) {
+                document.getElementById('editCategoryNameError').textContent = 'Category name is required';
+                document.getElementById('editCategoryNameError').classList.remove('hidden');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            setButtonLoading(submitBtn, true);
+            
+            const data = { Id: categoryId, CategoryName: categoryName };
+            
+            fetch('/category', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                setButtonLoading(submitBtn, false);
+                
+                if (data.success) {
+                    editModal.classList.add('hidden');
+                    showAlert(data.message);
+                    performSearch(); 
+                } else {
+                    if (data.errors) {
+                        document.getElementById('editCategoryNameError').textContent = data.errors[0];
+                        document.getElementById('editCategoryNameError').classList.remove('hidden');
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                }
+            })
+            .catch(error => {
+                setButtonLoading(submitBtn, false);
+                console.error('Error:', error);
+                showAlert('An error occurred while updating the category', 'error');
+            });
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (!categoryToDelete) return;
+            
+            const submitBtn = this;
+            setButtonLoading(submitBtn, true);
+            
+            fetch(`/category/${categoryToDelete}`, {
+                method: 'DELETE',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                setButtonLoading(submitBtn, false);
+                deleteModal.classList.add('hidden');
+                
+                if (data.success) {
+                    showAlert(data.message);
+                    performSearch(); 
+                } else {
+                    showAlert(data.message || 'Failed to delete category', 'error');
+                }
+                categoryToDelete = null;
+            })
+            .catch(error => {
+                setButtonLoading(submitBtn, false);
+                deleteModal.classList.add('hidden');
+                showAlert('An error occurred while deleting the category', 'error');
+                categoryToDelete = null;
+            });
+        });
+
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', function() {
+                addModal.classList.add('hidden');
+                editModal.classList.add('hidden');
+                deleteModal.classList.add('hidden');
+            });
+        });
+
+        performSearch();
+
+        document.addEventListener('click', function () {
+            document.querySelector('.date-picker-dropdown').classList.add('hidden');
+            document.querySelector('.entries-dropdown').classList.add('hidden');
+        });
+
+        document.querySelector('.date-picker-dropdown').addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+        document.querySelector('.entries-dropdown').addEventListener('click', function (e) {
+            e.stopPropagation();
         });
     });
 </script>
